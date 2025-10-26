@@ -1,0 +1,7 @@
+settings:
+  prefix: "&6[TG SquidGame]&r "
+  defaultTimeLimit: 180
+  enableJoinMessage: true
+  soundEffects: true
+  defaultBossBarColor: "GREEN"
+  useComplexRandomLogic: true
