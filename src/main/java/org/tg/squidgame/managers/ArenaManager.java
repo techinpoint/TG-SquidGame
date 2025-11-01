@@ -20,12 +20,14 @@ public class ArenaManager {
     private final TGSquidGame plugin;
     private final Map<String, ArenaData> arenas;
     private final Map<String, RedLightGreenLight> activeGames;
+    private final Map<String, RedLightGreenLight> waitingGames;
     private final File arenasFolder;
 
     public ArenaManager(TGSquidGame plugin) {
         this.plugin = plugin;
         this.arenas = new HashMap<>();
         this.activeGames = new HashMap<>();
+        this.waitingGames = new HashMap<>();
         this.arenasFolder = new File(plugin.getDataFolder(), "arenas");
         if (!arenasFolder.exists()) {
             arenasFolder.mkdirs();
@@ -78,6 +80,8 @@ public class ArenaManager {
         arena.setStartCountdown(config.getInt("arena.startCountdown", 5));
         arena.setRandomLogic(config.getString("arena.randomLogic", "complex"));
         arena.setSoundEnabled(config.getBoolean("arena.soundEnabled", true));
+        arena.setMinPlayers(config.getInt("arena.minPlayers", 1));
+        arena.setAutoStartDelay(config.getInt("arena.autoStartDelay", 10));
         arena.setGuiConfig(config);
 
         arenas.put(name, arena);
@@ -131,6 +135,8 @@ public class ArenaManager {
         config.set("arena.startCountdown", 5);
         config.set("arena.randomLogic", "complex");
         config.set("arena.soundEnabled", true);
+        config.set("arena.minPlayers", 1);
+        config.set("arena.autoStartDelay", 10);
 
         config.set("gui.name", "&6" + name + " Settings");
         config.set("gui.size", 27);
@@ -196,6 +202,8 @@ public class ArenaManager {
         config.set("arena.startCountdown", arena.getStartCountdown());
         config.set("arena.randomLogic", arena.getRandomLogic());
         config.set("arena.soundEnabled", arena.isSoundEnabled());
+        config.set("arena.minPlayers", arena.getMinPlayers());
+        config.set("arena.autoStartDelay", arena.getAutoStartDelay());
 
         try {
             config.save(file);
@@ -217,6 +225,8 @@ public class ArenaManager {
         config.set("arena.barrierEnabled", arena.isBarrierEnabled());
         config.set("arena.timeLimit", arena.getTimeLimit());
         config.set("arena.soundEnabled", arena.isSoundEnabled());
+        config.set("arena.minPlayers", arena.getMinPlayers());
+        config.set("arena.autoStartDelay", arena.getAutoStartDelay());
 
         try {
             config.save(file);
@@ -235,8 +245,13 @@ public class ArenaManager {
             return;
         }
 
+        RedLightGreenLight waitingGame = waitingGames.remove(arenaName);
+        if (waitingGame != null) {
+            waitingGame.cancelAutoStart();
+        }
+
         if ("RedLightGreenLight".equals(arena.getType())) {
-            RedLightGreenLight game = new RedLightGreenLight(plugin, arena);
+            RedLightGreenLight game = waitingGame != null ? waitingGame : new RedLightGreenLight(plugin, arena);
             activeGames.put(arenaName, game);
             game.start();
         }
@@ -247,6 +262,11 @@ public class ArenaManager {
         if (game != null) {
             game.stop();
         }
+
+        RedLightGreenLight waitingGame = waitingGames.remove(arenaName);
+        if (waitingGame != null) {
+            waitingGame.cancelAutoStart();
+        }
     }
 
     public void stopAllGames() {
@@ -254,6 +274,11 @@ public class ArenaManager {
             game.stop();
         }
         activeGames.clear();
+
+        for (RedLightGreenLight game : waitingGames.values()) {
+            game.cancelAutoStart();
+        }
+        waitingGames.clear();
     }
 
     public ArenaData getArena(String name) {
@@ -274,6 +299,14 @@ public class ArenaManager {
 
     public boolean arenaExists(String name) {
         return arenas.containsKey(name);
+    }
+
+    public RedLightGreenLight getWaitingGame(String arenaName) {
+        return waitingGames.get(arenaName);
+    }
+
+    public void setWaitingGame(String arenaName, RedLightGreenLight game) {
+        waitingGames.put(arenaName, game);
     }
 
     private Location parseLocation(World world, String locString) {

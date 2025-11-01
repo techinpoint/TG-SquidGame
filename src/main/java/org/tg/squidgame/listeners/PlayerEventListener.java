@@ -50,14 +50,9 @@ public class PlayerEventListener implements Listener {
 
         Player player = (Player) event.getEntity();
         String arenaName = plugin.getPlayerManager().getPlayerArena(player);
-        
+
         if (arenaName != null) {
-            // Prevent fall damage and other damage for players in arena
-            if (event.getCause() == EntityDamageEvent.DamageCause.FALL || 
-                event.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION ||
-                event.getCause() == EntityDamageEvent.DamageCause.DROWNING) {
-                event.setCancelled(true);
-            }
+            event.setCancelled(true);
         }
     }
 
@@ -131,13 +126,8 @@ public class PlayerEventListener implements Listener {
                     ArenaData arena = plugin.getArenaManager().getArena(arenaName);
 
                     if (itemName.contains("Time Limit")) {
-                        int currentTime = arena.getTimeLimit();
-                        int newTime = currentTime + 30;
-                        if (newTime > 600) {
-                            newTime = 60;
-                        }
-                        arena.setTimeLimit(newTime);
-                        player.sendMessage(ChatColor.GREEN + "Time limit set to " + newTime + " seconds");
+                        cycleArenaSetting(arena, "timeLimit");
+                        player.sendMessage(ChatColor.GREEN + "Time limit set to " + arena.getTimeLimit() + " seconds");
                         player.closeInventory();
                         new ArenaGUI(plugin, arena).open(player);
                     } else if (itemName.contains("Barriers")) {
@@ -152,6 +142,16 @@ public class PlayerEventListener implements Listener {
                             (arena.isSoundEnabled() ? "enabled" : "disabled"));
                         player.closeInventory();
                         new ArenaGUI(plugin, arena).open(player);
+                    } else if (itemName.contains("Minimum Players")) {
+                        cycleArenaSetting(arena, "minPlayers");
+                        player.sendMessage(ChatColor.GREEN + "Minimum players set to " + arena.getMinPlayers());
+                        player.closeInventory();
+                        new ArenaGUI(plugin, arena).open(player);
+                    } else if (itemName.contains("Auto-Start") || itemName.contains("Timer")) {
+                        cycleArenaSetting(arena, "autoStart");
+                        player.sendMessage(ChatColor.GREEN + "Auto-start delay set to " + arena.getAutoStartDelay() + " seconds");
+                        player.closeInventory();
+                        new ArenaGUI(plugin, arena).open(player);
                     } else if (itemName.contains("Save")) {
                         plugin.getArenaManager().saveArena(arenaName);
                         plugin.getPlayerManager().exitEditMode(arenaName, player);
@@ -162,6 +162,49 @@ public class PlayerEventListener implements Listener {
                     return;
                 }
             }
+        }
+    }
+
+    private void cycleArenaSetting(ArenaData arena, String setting) {
+        switch (setting) {
+            case "timeLimit":
+                int[] timeLimits = {60, 120, 180, 240, 300, 600};
+                int currentTime = arena.getTimeLimit();
+                int nextTimeIndex = 0;
+                for (int i = 0; i < timeLimits.length; i++) {
+                    if (timeLimits[i] == currentTime) {
+                        nextTimeIndex = (i + 1) % timeLimits.length;
+                        break;
+                    }
+                }
+                arena.setTimeLimit(timeLimits[nextTimeIndex]);
+                break;
+
+            case "minPlayers":
+                int[] minPlayerValues = {1, 2, 3, 4, 5, 6, 8, 10};
+                int currentMin = arena.getMinPlayers();
+                int nextMinIndex = 0;
+                for (int i = 0; i < minPlayerValues.length; i++) {
+                    if (minPlayerValues[i] == currentMin) {
+                        nextMinIndex = (i + 1) % minPlayerValues.length;
+                        break;
+                    }
+                }
+                arena.setMinPlayers(minPlayerValues[nextMinIndex]);
+                break;
+
+            case "autoStart":
+                int[] autoStartValues = {5, 10, 15, 20, 30, 45, 60};
+                int currentAutoStart = arena.getAutoStartDelay();
+                int nextAutoStartIndex = 0;
+                for (int i = 0; i < autoStartValues.length; i++) {
+                    if (autoStartValues[i] == currentAutoStart) {
+                        nextAutoStartIndex = (i + 1) % autoStartValues.length;
+                        break;
+                    }
+                }
+                arena.setAutoStartDelay(autoStartValues[nextAutoStartIndex]);
+                break;
         }
     }
 }

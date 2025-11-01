@@ -69,15 +69,23 @@ public class ArenaGUI {
         soundLore.add(ChatColor.GRAY + "Click to toggle");
         inventory.setItem(soundSlot, createItem(Material.NOTE_BLOCK, soundName, soundLore));
 
-        // Add countdown timer configuration
-        int countdownSlot = arena.getGuiConfig().getInt("gui.items.countdown.slot", 20);
-        String countdownName = ChatColor.translateAlternateColorCodes('&',
-            arena.getGuiConfig().getString("gui.items.countdown.name", "&e⏰ Start Countdown"));
-        List<String> countdownLore = new ArrayList<>();
-        countdownLore.add(ChatColor.GRAY + "Configure game start countdown");
-        countdownLore.add(ChatColor.GRAY + "Current: " + ChatColor.YELLOW + "5 seconds");
-        countdownLore.add(ChatColor.GRAY + "Click to change");
-        inventory.setItem(countdownSlot, createItem(Material.REDSTONE_TORCH, countdownName, countdownLore));
+        int minPlayersSlot = arena.getGuiConfig().getInt("gui.items.minPlayers.slot", 19);
+        String minPlayersName = ChatColor.translateAlternateColorCodes('&',
+            arena.getGuiConfig().getString("gui.items.minPlayers.name", "&d Minimum Players"));
+        List<String> minPlayersLore = new ArrayList<>();
+        minPlayersLore.add(ChatColor.GRAY + "Minimum players to start");
+        minPlayersLore.add(ChatColor.GRAY + "Current: " + ChatColor.YELLOW + arena.getMinPlayers());
+        minPlayersLore.add(ChatColor.GRAY + "Click to change");
+        inventory.setItem(minPlayersSlot, createItem(Material.PLAYER_HEAD, minPlayersName, minPlayersLore));
+
+        int autoStartSlot = arena.getGuiConfig().getInt("gui.items.autoStart.slot", 20);
+        String autoStartName = ChatColor.translateAlternateColorCodes('&',
+            arena.getGuiConfig().getString("gui.items.autoStart.name", "&e Auto-Start Timer"));
+        List<String> autoStartLore = new ArrayList<>();
+        autoStartLore.add(ChatColor.GRAY + "Seconds before auto-start");
+        autoStartLore.add(ChatColor.GRAY + "Current: " + ChatColor.YELLOW + arena.getAutoStartDelay() + "s");
+        autoStartLore.add(ChatColor.GRAY + "Click to change");
+        inventory.setItem(autoStartSlot, createItem(Material.REDSTONE_TORCH, autoStartName, autoStartLore));
 
         int saveSlot = arena.getGuiConfig().getInt("gui.items.save.slot", 40);
         String saveName = ChatColor.translateAlternateColorCodes('&',
@@ -114,9 +122,21 @@ public class ArenaGUI {
             (arena.isSoundEnabled() ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled"));
         inventory.setItem(15, createItem(Material.NOTE_BLOCK, ChatColor.BLUE + "🔊 Sounds", soundLore));
 
+        List<String> minPlayersLore = new ArrayList<>();
+        minPlayersLore.add(ChatColor.GRAY + "Minimum players to start");
+        minPlayersLore.add(ChatColor.GRAY + "Current: " + ChatColor.YELLOW + arena.getMinPlayers());
+        minPlayersLore.add(ChatColor.GRAY + "Click to change");
+        inventory.setItem(19, createItem(Material.PLAYER_HEAD, ChatColor.LIGHT_PURPLE + "Minimum Players", minPlayersLore));
+
+        List<String> autoStartLore = new ArrayList<>();
+        autoStartLore.add(ChatColor.GRAY + "Seconds before auto-start");
+        autoStartLore.add(ChatColor.GRAY + "Current: " + ChatColor.YELLOW + arena.getAutoStartDelay() + "s");
+        autoStartLore.add(ChatColor.GRAY + "Click to change");
+        inventory.setItem(20, createItem(Material.REDSTONE_TORCH, ChatColor.YELLOW + "Auto-Start Timer", autoStartLore));
+
         List<String> saveLore = new ArrayList<>();
         saveLore.add(ChatColor.GRAY + "Save configuration changes");
-        inventory.setItem(40, createItem(Material.EMERALD, ChatColor.GREEN + "💾 Save Settings", saveLore));
+        inventory.setItem(40, createItem(Material.EMERALD, ChatColor.GREEN + "Save Settings", saveLore));
 
         List<String> closeLore = new ArrayList<>();
         closeLore.add(ChatColor.GRAY + "Close without saving");
@@ -180,13 +200,21 @@ public class ArenaGUI {
                 player.sendMessage(ChatColor.GREEN + "Sounds " + 
                     (arena.isSoundEnabled() ? "enabled" : "disabled"));
                 break;
+            case PLAYER_HEAD:
+                cycleMinPlayers();
+                setupItems();
+                player.sendMessage(ChatColor.GREEN + "Minimum players set to " + arena.getMinPlayers());
+                break;
+            case REDSTONE_TORCH:
+                cycleAutoStartDelay();
+                setupItems();
+                player.sendMessage(ChatColor.GREEN + "Auto-start delay set to " + arena.getAutoStartDelay() + " seconds");
+                break;
             case EMERALD:
-                // Handle save - only save GUI changes
                 plugin.getArenaManager().saveArenaConfig(arena.getName());
-                player.sendMessage(ChatColor.GREEN + "💾 GUI settings saved!");
+                player.sendMessage(ChatColor.GREEN + "GUI settings saved!");
                 break;
             case REDSTONE:
-                // Handle close
                 player.closeInventory();
                 break;
         }
@@ -194,8 +222,8 @@ public class ArenaGUI {
 
     private void cycleTimeLimit() {
         int currentLimit = arena.getTimeLimit();
-        int[] timeLimits = {60, 120, 180, 240, 300, 600}; // 1min, 2min, 3min, 4min, 5min, 10min
-        
+        int[] timeLimits = {60, 120, 180, 240, 300, 600};
+
         int nextIndex = 0;
         for (int i = 0; i < timeLimits.length; i++) {
             if (timeLimits[i] == currentLimit) {
@@ -203,7 +231,37 @@ public class ArenaGUI {
                 break;
             }
         }
-        
+
         arena.setTimeLimit(timeLimits[nextIndex]);
+    }
+
+    private void cycleMinPlayers() {
+        int current = arena.getMinPlayers();
+        int[] values = {1, 2, 3, 4, 5, 6, 8, 10};
+
+        int nextIndex = 0;
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] == current) {
+                nextIndex = (i + 1) % values.length;
+                break;
+            }
+        }
+
+        arena.setMinPlayers(values[nextIndex]);
+    }
+
+    private void cycleAutoStartDelay() {
+        int current = arena.getAutoStartDelay();
+        int[] values = {5, 10, 15, 20, 30, 45, 60};
+
+        int nextIndex = 0;
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] == current) {
+                nextIndex = (i + 1) % values.length;
+                break;
+            }
+        }
+
+        arena.setAutoStartDelay(values[nextIndex]);
     }
 }

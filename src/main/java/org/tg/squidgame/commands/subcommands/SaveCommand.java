@@ -34,17 +34,21 @@ public class SaveCommand implements SubCommand {
 
         String arenaName = args[0];
 
+        if (!plugin.getArenaManager().arenaExists(arenaName)) {
+            player.sendMessage(ChatColor.RED + "Arena '" + arenaName + "' not found.");
+            return true;
+        }
+
         if (!plugin.getPlayerManager().isInEditMode(arenaName, player)) {
             player.sendMessage(ChatColor.RED + "You must be in edit mode to save arena changes.");
             player.sendMessage(ChatColor.GRAY + "Use /tgsg " + arenaName + " edit to enter edit mode first.");
             return true;
         }
 
-        // Save all arena data including positions, lobby, spectator, etc.
         plugin.getArenaManager().saveArena(arenaName);
         plugin.getPlayerManager().exitEditMode(arenaName, player);
         player.closeInventory();
-        player.sendMessage(ChatColor.GREEN + "💾 Arena saved successfully!");
+        player.sendMessage(ChatColor.GREEN + "Arena saved successfully!");
         player.sendMessage(ChatColor.GRAY + "All positions, lobby, spectator spawn, and settings have been saved.");
         player.sendMessage(ChatColor.GRAY + "Edit mode disabled for arena '" + arenaName + "'");
 

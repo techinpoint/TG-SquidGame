@@ -26,6 +26,7 @@ public class RedLightGreenLight {
     private final Map<UUID, Location> joinPositions;
     private final List<String> leaderboard;
     private BukkitTask gameTask;
+    private BukkitTask autoStartTask;
     private int timeRemaining;
     private int countdownTimer;
 
@@ -133,6 +134,11 @@ public class RedLightGreenLight {
         if (gameTask != null) {
             gameTask.cancel();
             gameTask = null;
+        }
+
+        if (autoStartTask != null) {
+            autoStartTask.cancel();
+            autoStartTask = null;
         }
 
         if (bossBar != null) {
@@ -366,19 +372,7 @@ public class RedLightGreenLight {
     }
 
     private void teleportToStart(Player player) {
-        if (arena.getStartPos1() == null || arena.getStartPos2() == null) {
-            return;
-        }
-
-        Location start1 = arena.getStartPos1();
-        Location start2 = arena.getStartPos2();
-
-        double x = Math.min(start1.getX(), start2.getX()) + Math.random() * Math.abs(start1.getX() - start2.getX());
-        double y = Math.max(start1.getY(), start2.getY()) + 1; // Ensure players spawn above ground
-        double z = Math.min(start1.getZ(), start2.getZ()) + Math.random() * Math.abs(start1.getZ() - start2.getZ());
-
-        Location spawnLoc = new Location(start1.getWorld(), x, y, z);
-        player.teleport(spawnLoc);
+        // Do not teleport - players stay where they are
     }
 
     private int getRandomPhaseLength() {
@@ -423,5 +417,45 @@ public class RedLightGreenLight {
 
     public ArenaData getArena() {
         return arena;
+    }
+
+    public void startAutoStartTimer() {
+        if (autoStartTask != null) {
+            autoStartTask.cancel();
+        }
+
+        int delay = arena.getAutoStartDelay();
+        autoStartTask = new BukkitRunnable() {
+            int timeLeft = delay;
+
+            @Override
+            public void run() {
+                Set<UUID> players = plugin.getPlayerManager().getArenaPlayers(arena.getName());
+
+                if (players.size() < arena.getMinPlayers()) {
+                    broadcastMessage(ChatColor.YELLOW + "Waiting for " + arena.getMinPlayers() + " player(s) to start...");
+                    timeLeft = delay;
+                    return;
+                }
+
+                if (timeLeft > 0) {
+                    if (timeLeft <= 5 || timeLeft % 5 == 0) {
+                        broadcastMessage(ChatColor.YELLOW + "Game starting in " + timeLeft + " seconds...");
+                    }
+                    timeLeft--;
+                } else {
+                    cancel();
+                    autoStartTask = null;
+                    start();
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 20L);
+    }
+
+    public void cancelAutoStart() {
+        if (autoStartTask != null) {
+            autoStartTask.cancel();
+            autoStartTask = null;
+        }
     }
 }

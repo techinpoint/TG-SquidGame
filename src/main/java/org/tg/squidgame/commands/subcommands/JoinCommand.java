@@ -62,6 +62,13 @@ public class JoinCommand implements SubCommand {
         player.sendMessage(ChatColor.GREEN + "You joined arena '" + arenaName + "'");
         player.sendMessage(ChatColor.GRAY + "Waiting for game to start...");
 
+        RedLightGreenLight waitingGame = plugin.getArenaManager().getWaitingGame(arenaName);
+        if (waitingGame == null) {
+            waitingGame = new RedLightGreenLight(plugin, arena);
+            plugin.getArenaManager().setWaitingGame(arenaName, waitingGame);
+            waitingGame.startAutoStartTimer();
+        }
+
         return true;
     }
 }

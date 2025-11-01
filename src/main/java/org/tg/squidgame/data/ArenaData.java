@@ -22,6 +22,8 @@ public class ArenaData {
     private int startCountdown;
     private String randomLogic;
     private boolean soundEnabled;
+    private int minPlayers;
+    private int autoStartDelay;
     private FileConfiguration guiConfig;
 
     public ArenaData(String name, String type, String worldName) {
@@ -33,6 +35,8 @@ public class ArenaData {
         this.startCountdown = 5;
         this.randomLogic = "complex";
         this.soundEnabled = true;
+        this.minPlayers = 1;
+        this.autoStartDelay = 10;
     }
 
     public String getName() {
@@ -157,6 +161,22 @@ public class ArenaData {
 
     public void setGuiConfig(FileConfiguration guiConfig) {
         this.guiConfig = guiConfig;
+    }
+
+    public int getMinPlayers() {
+        return minPlayers;
+    }
+
+    public void setMinPlayers(int minPlayers) {
+        this.minPlayers = minPlayers;
+    }
+
+    public int getAutoStartDelay() {
+        return autoStartDelay;
+    }
+
+    public void setAutoStartDelay(int autoStartDelay) {
+        this.autoStartDelay = autoStartDelay;
     }
 
     public boolean isComplete() {
