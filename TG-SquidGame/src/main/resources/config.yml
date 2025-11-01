@@ -1,0 +1,19 @@
+settings:
+  prefix: "&6[TG SquidGame]&r "
+  defaultTimeLimit: 180
+  countdownTimer: 5
+  enableJoinMessage: true
+  soundEffects: true
+  defaultBossBarColor: "GREEN"
+  useComplexRandomLogic: true
+  
+game:
+  # Default game settings
+  startCountdown: 5  # seconds before game starts
+  defaultGameTime: 180  # seconds for game duration
+  movementThreshold: 0.15  # distance threshold for movement detection
+  
+arena:
+  # Arena-specific settings
+  autoSaveOnEdit: false  # whether to auto-save when exiting edit mode
+  requireEditModeForSave: true  # require edit mode to use save command
