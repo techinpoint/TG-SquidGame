@@ -58,13 +58,17 @@ public class SetPos1Command implements SubCommand {
 
         Location loc = player.getLocation();
         arena.setPos1(loc);
-        
+
         player.sendMessage(plugin.getMessagesManager().getMessage("pos1-set"));
         Map<String, String> replacements = new HashMap<>();
         replacements.put("x", String.valueOf(loc.getBlockX()));
         replacements.put("y", String.valueOf(loc.getBlockY()));
         replacements.put("z", String.valueOf(loc.getBlockZ()));
         player.sendMessage(plugin.getMessagesManager().getMessage("location-info", replacements));
+
+        if (arena.isComplete()) {
+            player.sendMessage(org.bukkit.ChatColor.YELLOW + "Arena setup completed successfully! All positions are now set.");
+        }
 
         return true;
     }

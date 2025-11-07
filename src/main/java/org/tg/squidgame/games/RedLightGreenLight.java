@@ -105,7 +105,7 @@ public class RedLightGreenLight {
                 if (countdownTimer > 0) {
                     bossBar.setTitle("⏰ Game starting in " + countdownTimer + " seconds...");
                     broadcastMessage(ChatColor.YELLOW + "Game starting in " + countdownTimer + " seconds!");
-                    
+
                     if (arena.isSoundEnabled()) {
                         if (countdownTimer <= 5) {
                             playSound(Sound.BLOCK_NOTE_BLOCK_PLING, 2.0f);
@@ -113,24 +113,21 @@ public class RedLightGreenLight {
                             playSound(Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f);
                         }
                     }
-                    
+
                     countdownTimer--;
                 } else {
-                    // Start the actual game
                     gameState = GameState.RUNNING;
                     bossBar.setTitle("🟢 GREEN LIGHT - GO!");
                     bossBar.setColor(BarColor.GREEN);
-                    
-                    // Teleport players to start area
+
                     for (UUID uuid : players) {
                         Player player = Bukkit.getPlayer(uuid);
                         if (player != null) {
-                            teleportToStart(player);
                             lastPositions.put(uuid, player.getLocation().clone());
                         }
                     }
-                    
-                    broadcastMessage(ChatColor.GREEN + "🎮 Game Started! Reach the finish line!");
+
+                    broadcastMessage(ChatColor.GREEN + "Game Started! Reach the finish line!");
                     startGameLoop();
                     cancel();
                 }

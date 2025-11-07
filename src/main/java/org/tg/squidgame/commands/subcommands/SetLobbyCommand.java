@@ -48,7 +48,11 @@ public class SetLobbyCommand implements SubCommand {
         }
 
         arena.setLobby(player.getLocation());
-        player.sendMessage(ChatColor.GREEN + "✓ Lobby position set for arena '" + arenaName + "'");
+        player.sendMessage(ChatColor.GREEN + "Lobby position set for arena '" + arenaName + "'");
+
+        if (arena.isComplete()) {
+            player.sendMessage(ChatColor.YELLOW + "Arena setup completed successfully! All positions are now set.");
+        }
 
         return true;
     }

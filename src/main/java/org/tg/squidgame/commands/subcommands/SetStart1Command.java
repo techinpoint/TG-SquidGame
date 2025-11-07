@@ -48,8 +48,12 @@ public class SetStart1Command implements SubCommand {
         }
 
         arena.setStartPos1(player.getLocation());
-        player.sendMessage(ChatColor.GREEN + "🚀 Start zone position 1 set successfully!");
+        player.sendMessage(ChatColor.GREEN + "Start zone position 1 set successfully!");
         player.sendMessage(ChatColor.GRAY + "Location: " + formatLocation(player.getLocation()));
+
+        if (arena.isComplete()) {
+            player.sendMessage(ChatColor.YELLOW + "Arena setup completed successfully! All positions are now set.");
+        }
 
         return true;
     }
@@ -57,5 +61,5 @@ public class SetStart1Command implements SubCommand {
     private String formatLocation(org.bukkit.Location loc) {
         return String.format("X: %d, Y: %d, Z: %d", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
     }
-    }
+}
 

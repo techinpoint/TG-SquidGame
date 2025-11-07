@@ -107,10 +107,14 @@ public class ArenaGUI {
         String minPlayersName = ChatColor.translateAlternateColorCodes('&',
             arena.getGuiConfig().getString("gui.items.minPlayers.name", "&d Minimum Players"));
         List<String> minPlayersLore = new ArrayList<>();
-        minPlayersLore.add(ChatColor.GRAY + "Minimum players to start");
-        minPlayersLore.add(ChatColor.GRAY + "Current: " + ChatColor.YELLOW + arena.getMinPlayers());
-        minPlayersLore.add(ChatColor.GRAY + "Left-click: +1 | Right-click: -1");
-        minPlayersLore.add(ChatColor.GRAY + "Shift+Left: +5 | Shift+Right: -5");
+        minPlayersLore.add(ChatColor.DARK_GRAY + "▸ Players needed to start game");
+        minPlayersLore.add("");
+        minPlayersLore.add(ChatColor.AQUA + "Current Value: " + ChatColor.WHITE + arena.getMinPlayers() + ChatColor.GRAY + " player(s)");
+        minPlayersLore.add("");
+        minPlayersLore.add(ChatColor.YELLOW + "Left Click" + ChatColor.GRAY + " » " + ChatColor.GREEN + "+1 player");
+        minPlayersLore.add(ChatColor.YELLOW + "Right Click" + ChatColor.GRAY + " » " + ChatColor.RED + "-1 player");
+        minPlayersLore.add(ChatColor.YELLOW + "Shift + Left" + ChatColor.GRAY + " » " + ChatColor.GREEN + "+5 players");
+        minPlayersLore.add(ChatColor.YELLOW + "Shift + Right" + ChatColor.GRAY + " » " + ChatColor.RED + "-5 players");
         inventory.setItem(minPlayersSlot, createItem(Material.PLAYER_HEAD, minPlayersName, minPlayersLore));
 
         int autoStartSlot = arena.getGuiConfig().getInt("gui.items.autoStart.slot", 20);
@@ -123,10 +127,14 @@ public class ArenaGUI {
         String autoStartName = ChatColor.translateAlternateColorCodes('&',
             arena.getGuiConfig().getString("gui.items.autoStart.name", "&e Auto-Start Timer"));
         List<String> autoStartLore = new ArrayList<>();
-        autoStartLore.add(ChatColor.GRAY + "Seconds before auto-start");
-        autoStartLore.add(ChatColor.GRAY + "Current: " + ChatColor.YELLOW + arena.getAutoStartDelay() + "s");
-        autoStartLore.add(ChatColor.GRAY + "Left-click: +5 | Right-click: -5");
-        autoStartLore.add(ChatColor.GRAY + "Shift+Left: +10 | Shift+Right: -10");
+        autoStartLore.add(ChatColor.DARK_GRAY + "▸ Countdown before game starts");
+        autoStartLore.add("");
+        autoStartLore.add(ChatColor.AQUA + "Current Value: " + ChatColor.WHITE + arena.getAutoStartDelay() + ChatColor.GRAY + " seconds");
+        autoStartLore.add("");
+        autoStartLore.add(ChatColor.YELLOW + "Left Click" + ChatColor.GRAY + " » " + ChatColor.GREEN + "+5 seconds");
+        autoStartLore.add(ChatColor.YELLOW + "Right Click" + ChatColor.GRAY + " » " + ChatColor.RED + "-5 seconds");
+        autoStartLore.add(ChatColor.YELLOW + "Shift + Left" + ChatColor.GRAY + " » " + ChatColor.GREEN + "+10 seconds");
+        autoStartLore.add(ChatColor.YELLOW + "Shift + Right" + ChatColor.GRAY + " » " + ChatColor.RED + "-10 seconds");
         inventory.setItem(autoStartSlot, createItem(Material.REDSTONE_TORCH, autoStartName, autoStartLore));
 
         int saveSlot = arena.getGuiConfig().getInt("gui.items.save.slot", 40);
@@ -186,19 +194,27 @@ public class ArenaGUI {
         inventory.setItem(slot15, createItem(Material.NOTE_BLOCK, ChatColor.BLUE + "🔊 Sounds", soundLore));
 
         List<String> minPlayersLore = new ArrayList<>();
-        minPlayersLore.add(ChatColor.GRAY + "Minimum players to start");
-        minPlayersLore.add(ChatColor.GRAY + "Current: " + ChatColor.YELLOW + arena.getMinPlayers());
-        minPlayersLore.add(ChatColor.GRAY + "Left-click: +1 | Right-click: -1");
-        minPlayersLore.add(ChatColor.GRAY + "Shift+Left: +5 | Shift+Right: -5");
+        minPlayersLore.add(ChatColor.DARK_GRAY + "▸ Players needed to start game");
+        minPlayersLore.add("");
+        minPlayersLore.add(ChatColor.AQUA + "Current Value: " + ChatColor.WHITE + arena.getMinPlayers() + ChatColor.GRAY + " player(s)");
+        minPlayersLore.add("");
+        minPlayersLore.add(ChatColor.YELLOW + "Left Click" + ChatColor.GRAY + " » " + ChatColor.GREEN + "+1 player");
+        minPlayersLore.add(ChatColor.YELLOW + "Right Click" + ChatColor.GRAY + " » " + ChatColor.RED + "-1 player");
+        minPlayersLore.add(ChatColor.YELLOW + "Shift + Left" + ChatColor.GRAY + " » " + ChatColor.GREEN + "+5 players");
+        minPlayersLore.add(ChatColor.YELLOW + "Shift + Right" + ChatColor.GRAY + " » " + ChatColor.RED + "-5 players");
         // FIX: Clamp slot 19 to valid range
         int slot19 = Math.min(19, maxSlot);
         inventory.setItem(slot19, createItem(Material.PLAYER_HEAD, ChatColor.LIGHT_PURPLE + "Minimum Players", minPlayersLore));
 
         List<String> autoStartLore = new ArrayList<>();
-        autoStartLore.add(ChatColor.GRAY + "Seconds before auto-start");
-        autoStartLore.add(ChatColor.GRAY + "Current: " + ChatColor.YELLOW + arena.getAutoStartDelay() + "s");
-        autoStartLore.add(ChatColor.GRAY + "Left-click: +5 | Right-click: -5");
-        autoStartLore.add(ChatColor.GRAY + "Shift+Left: +10 | Shift+Right: -10");
+        autoStartLore.add(ChatColor.DARK_GRAY + "▸ Countdown before game starts");
+        autoStartLore.add("");
+        autoStartLore.add(ChatColor.AQUA + "Current Value: " + ChatColor.WHITE + arena.getAutoStartDelay() + ChatColor.GRAY + " seconds");
+        autoStartLore.add("");
+        autoStartLore.add(ChatColor.YELLOW + "Left Click" + ChatColor.GRAY + " » " + ChatColor.GREEN + "+5 seconds");
+        autoStartLore.add(ChatColor.YELLOW + "Right Click" + ChatColor.GRAY + " » " + ChatColor.RED + "-5 seconds");
+        autoStartLore.add(ChatColor.YELLOW + "Shift + Left" + ChatColor.GRAY + " » " + ChatColor.GREEN + "+10 seconds");
+        autoStartLore.add(ChatColor.YELLOW + "Shift + Right" + ChatColor.GRAY + " » " + ChatColor.RED + "-10 seconds");
         // FIX: Clamp slot 20 to valid range
         int slot20 = Math.min(20, maxSlot);
         inventory.setItem(slot20, createItem(Material.REDSTONE_TORCH, ChatColor.YELLOW + "Auto-Start Timer", autoStartLore));

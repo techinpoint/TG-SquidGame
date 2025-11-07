@@ -48,8 +48,12 @@ public class SetWin1Command implements SubCommand {
         }
 
         arena.setWinPos1(player.getLocation());
-        player.sendMessage(ChatColor.GREEN + "🏁 Win zone position 1 set successfully!");
+        player.sendMessage(ChatColor.GREEN + "Win zone position 1 set successfully!");
         player.sendMessage(ChatColor.GRAY + "Location: " + formatLocation(player.getLocation()));
+
+        if (arena.isComplete()) {
+            player.sendMessage(ChatColor.YELLOW + "Arena setup completed successfully! All positions are now set.");
+        }
 
         return true;
     }

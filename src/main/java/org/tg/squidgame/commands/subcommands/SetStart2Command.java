@@ -48,7 +48,11 @@ public class SetStart2Command implements SubCommand {
         }
 
         arena.setStartPos2(player.getLocation());
-        player.sendMessage(ChatColor.GREEN + "✓ Start position 2 set for arena '" + arenaName + "'");
+        player.sendMessage(ChatColor.GREEN + "Start position 2 set for arena '" + arenaName + "'");
+
+        if (arena.isComplete()) {
+            player.sendMessage(ChatColor.YELLOW + "Arena setup completed successfully! All positions are now set.");
+        }
 
         return true;
     }

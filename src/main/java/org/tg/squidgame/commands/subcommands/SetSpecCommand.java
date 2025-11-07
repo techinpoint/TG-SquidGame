@@ -48,7 +48,11 @@ public class SetSpecCommand implements SubCommand {
         }
 
         arena.setSpectator(player.getLocation());
-        player.sendMessage(ChatColor.GREEN + "✓ Spectator position set for arena '" + arenaName + "'");
+        player.sendMessage(ChatColor.GREEN + "Spectator position set for arena '" + arenaName + "'");
+
+        if (arena.isComplete()) {
+            player.sendMessage(ChatColor.YELLOW + "Arena setup completed successfully! All positions are now set.");
+        }
 
         return true;
     }
