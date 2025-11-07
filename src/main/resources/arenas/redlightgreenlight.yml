@@ -1,0 +1,59 @@
+arena:
+  name: "redlightgreenlight"
+  type: "RedLightGreenLight"
+  world: "world"
+  pos1: "100,65,100"
+  pos2: "150,75,150"
+  startPos1: "110,65,110"
+  startPos2: "120,65,120"
+  winPos1: "145,65,145"
+  winPos2: "150,65,150"
+  lobby: "90,65,90"
+  spectator: "160,70,160"
+  barrierEnabled: true
+  timeLimit: 180
+  startCountdown: 5
+  randomLogic: "complex"
+  soundEnabled: true
+  minPlayers: 1
+  autoStartDelay: 10
+
+gui:
+  name: "&6Red Light Green Light Settings"
+  size: 45
+  items:
+    timeLimit:
+      slot: 11
+      name: "&a⏳ Time Limit"
+      lore:
+        - "&7Change round time"
+    barrier:
+      slot: 13
+      name: "&c🚫 Barriers"
+      lore:
+        - "&7Toggle arena barriers"
+    sound:
+      slot: 15
+      name: "&b🔊 Sounds"
+      lore:
+        - "&7Enable or disable sound effects"
+    minPlayers:
+      slot: 19
+      name: "&d Minimum Players"
+      lore:
+        - "&7Minimum players to start"
+    autoStart:
+      slot: 20
+      name: "&e Auto-Start Timer"
+      lore:
+        - "&7Seconds before auto-start"
+    save:
+      slot: 40
+      name: "&a💾 Save Settings"
+      lore:
+        - "&7Save GUI configuration changes"
+    close:
+      slot: 44
+      name: "&c❌ Close"
+      lore:
+        - "&7Close without saving"
