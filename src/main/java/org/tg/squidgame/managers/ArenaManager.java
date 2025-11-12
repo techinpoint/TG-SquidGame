@@ -115,60 +115,49 @@ public class ArenaManager {
         }
 
         FileConfiguration gameTemplate = getGameTemplate(type);
-        FileConfiguration mergedConfig = new YamlConfiguration();
-        
-        if (gameTemplate != null) {
-            for (String key : gameTemplate.getKeys(true)) {
-                mergedConfig.set(key, gameTemplate.get(key));
-            }
-        }
-        
-        for (String key : config.getKeys(true)) {
-            mergedConfig.set(key, config.get(key));
-        }
-        
+
         if (gameTemplate != null) {
             if (!config.contains("arena.barrierEnabled")) {
-                mergedConfig.set("arena.barrierEnabled", gameTemplate.getBoolean("defaults.barrierEnabled", true));
+                config.set("arena.barrierEnabled", gameTemplate.getBoolean("defaults.barrierEnabled", true));
             }
             if (!config.contains("arena.timeLimit")) {
-                mergedConfig.set("arena.timeLimit", gameTemplate.getInt("defaults.timeLimit", 180));
+                config.set("arena.timeLimit", gameTemplate.getInt("defaults.timeLimit", 180));
             }
             if (!config.contains("arena.startCountdown")) {
-                mergedConfig.set("arena.startCountdown", gameTemplate.getInt("defaults.startCountdown", 5));
+                config.set("arena.startCountdown", gameTemplate.getInt("defaults.startCountdown", 5));
             }
             if (!config.contains("arena.randomLogic")) {
-                mergedConfig.set("arena.randomLogic", gameTemplate.getString("defaults.randomLogic", "complex"));
+                config.set("arena.randomLogic", gameTemplate.getString("defaults.randomLogic", "complex"));
             }
             if (!config.contains("arena.soundEnabled")) {
-                mergedConfig.set("arena.soundEnabled", gameTemplate.getBoolean("defaults.soundEnabled", true));
+                config.set("arena.soundEnabled", gameTemplate.getBoolean("defaults.soundEnabled", true));
             }
             if (!config.contains("arena.minPlayers")) {
-                mergedConfig.set("arena.minPlayers", gameTemplate.getInt("defaults.minPlayers", 1));
+                config.set("arena.minPlayers", gameTemplate.getInt("defaults.minPlayers", 1));
             }
             if (!config.contains("arena.autoStartDelay")) {
-                mergedConfig.set("arena.autoStartDelay", gameTemplate.getInt("defaults.autoStartDelay", 10));
+                config.set("arena.autoStartDelay", gameTemplate.getInt("defaults.autoStartDelay", 10));
             }
         }
 
         ArenaData arena = new ArenaData(name, type, worldName);
 
-        arena.setPos1(parseLocation(world, mergedConfig.getString("arena.pos1")));
-        arena.setPos2(parseLocation(world, mergedConfig.getString("arena.pos2")));
-        arena.setStartPos1(parseLocation(world, mergedConfig.getString("arena.startPos1")));
-        arena.setStartPos2(parseLocation(world, mergedConfig.getString("arena.startPos2")));
-        arena.setWinPos1(parseLocation(world, mergedConfig.getString("arena.winPos1")));
-        arena.setWinPos2(parseLocation(world, mergedConfig.getString("arena.winPos2")));
-        arena.setLobby(parseLocation(world, mergedConfig.getString("arena.lobby")));
-        arena.setSpectator(parseLocation(world, mergedConfig.getString("arena.spectator")));
-        arena.setBarrierEnabled(mergedConfig.getBoolean("arena.barrierEnabled", true));
-        arena.setTimeLimit(mergedConfig.getInt("arena.timeLimit", 180));
-        arena.setStartCountdown(mergedConfig.getInt("arena.startCountdown", 5));
-        arena.setRandomLogic(mergedConfig.getString("arena.randomLogic", "complex"));
-        arena.setSoundEnabled(mergedConfig.getBoolean("arena.soundEnabled", true));
-        arena.setMinPlayers(mergedConfig.getInt("arena.minPlayers", 1));
-        arena.setAutoStartDelay(mergedConfig.getInt("arena.autoStartDelay", 10));
-        arena.setGuiConfig(mergedConfig);
+        arena.setPos1(parseLocation(world, config.getString("arena.pos1")));
+        arena.setPos2(parseLocation(world, config.getString("arena.pos2")));
+        arena.setStartPos1(parseLocation(world, config.getString("arena.startPos1")));
+        arena.setStartPos2(parseLocation(world, config.getString("arena.startPos2")));
+        arena.setWinPos1(parseLocation(world, config.getString("arena.winPos1")));
+        arena.setWinPos2(parseLocation(world, config.getString("arena.winPos2")));
+        arena.setLobby(parseLocation(world, config.getString("arena.lobby")));
+        arena.setSpectator(parseLocation(world, config.getString("arena.spectator")));
+        arena.setBarrierEnabled(config.getBoolean("arena.barrierEnabled", true));
+        arena.setTimeLimit(config.getInt("arena.timeLimit", 180));
+        arena.setStartCountdown(config.getInt("arena.startCountdown", 5));
+        arena.setRandomLogic(config.getString("arena.randomLogic", "complex"));
+        arena.setSoundEnabled(config.getBoolean("arena.soundEnabled", true));
+        arena.setMinPlayers(config.getInt("arena.minPlayers", 1));
+        arena.setAutoStartDelay(config.getInt("arena.autoStartDelay", 10));
+        arena.setGuiConfig(config);
 
         arenas.put(name, arena);
     }
@@ -204,7 +193,9 @@ public class ArenaManager {
             return false;
         }
 
+        FileConfiguration gameTemplate = getGameTemplate(type);
         FileConfiguration config = new YamlConfiguration();
+
         config.set("arena.name", name);
         config.set("arena.type", type);
         config.set("arena.world", worldName);
@@ -216,16 +207,27 @@ public class ArenaManager {
         config.set("arena.winPos2", "0,0,0");
         config.set("arena.lobby", "0,0,0");
         config.set("arena.spectator", "0,0,0");
-        config.set("arena.barrierEnabled", true);
-        config.set("arena.timeLimit", 180);
-        config.set("arena.startCountdown", 5);
-        config.set("arena.randomLogic", "complex");
-        config.set("arena.soundEnabled", true);
-        config.set("arena.minPlayers", 1);
-        config.set("arena.autoStartDelay", 10);
+
+        if (gameTemplate != null) {
+            config.set("arena.barrierEnabled", gameTemplate.getBoolean("defaults.barrierEnabled", true));
+            config.set("arena.timeLimit", gameTemplate.getInt("defaults.timeLimit", 180));
+            config.set("arena.startCountdown", gameTemplate.getInt("defaults.startCountdown", 5));
+            config.set("arena.randomLogic", gameTemplate.getString("defaults.randomLogic", "complex"));
+            config.set("arena.soundEnabled", gameTemplate.getBoolean("defaults.soundEnabled", true));
+            config.set("arena.minPlayers", gameTemplate.getInt("defaults.minPlayers", 1));
+            config.set("arena.autoStartDelay", gameTemplate.getInt("defaults.autoStartDelay", 10));
+        } else {
+            config.set("arena.barrierEnabled", true);
+            config.set("arena.timeLimit", 180);
+            config.set("arena.startCountdown", 5);
+            config.set("arena.randomLogic", "complex");
+            config.set("arena.soundEnabled", true);
+            config.set("arena.minPlayers", 1);
+            config.set("arena.autoStartDelay", 10);
+        }
 
         config.set("gui.name", "&6" + name + " Settings");
-        config.set("gui.size", 27);
+        config.set("gui.size", 45);
         config.set("gui.items.timeLimit.slot", 11);
         config.set("gui.items.timeLimit.name", "&a⏳ Time Limit");
         config.set("gui.items.timeLimit.lore", java.util.Arrays.asList("&7Change round time"));
@@ -235,9 +237,18 @@ public class ArenaManager {
         config.set("gui.items.sound.slot", 15);
         config.set("gui.items.sound.name", "&b🔊 Sounds");
         config.set("gui.items.sound.lore", java.util.Arrays.asList("&7Enable or disable sound effects"));
-        config.set("gui.items.save.slot", 22);
-        config.set("gui.items.save.name", "&a💾 Save & Exit");
-        config.set("gui.items.save.lore", java.util.Arrays.asList("&7Save arena settings"));
+        config.set("gui.items.minPlayers.slot", 19);
+        config.set("gui.items.minPlayers.name", "&d Minimum Players");
+        config.set("gui.items.minPlayers.lore", java.util.Arrays.asList("&7Minimum players to start"));
+        config.set("gui.items.autoStart.slot", 20);
+        config.set("gui.items.autoStart.name", "&e Auto-Start Timer");
+        config.set("gui.items.autoStart.lore", java.util.Arrays.asList("&7Seconds before auto-start"));
+        config.set("gui.items.save.slot", 40);
+        config.set("gui.items.save.name", "&a💾 Save Settings");
+        config.set("gui.items.save.lore", java.util.Arrays.asList("&7Save GUI configuration changes"));
+        config.set("gui.items.close.slot", 44);
+        config.set("gui.items.close.name", "&c❌ Close");
+        config.set("gui.items.close.lore", java.util.Arrays.asList("&7Close without saving"));
 
         try {
             config.save(file);
@@ -291,6 +302,13 @@ public class ArenaManager {
         config.set("arena.minPlayers", arena.getMinPlayers());
         config.set("arena.autoStartDelay", arena.getAutoStartDelay());
 
+        if (arena.getGuiConfig() != null) {
+            FileConfiguration guiConfig = arena.getGuiConfig();
+            if (guiConfig.contains("gui")) {
+                config.set("gui", guiConfig.get("gui"));
+            }
+        }
+
         try {
             config.save(file);
         } catch (IOException e) {
@@ -307,12 +325,18 @@ public class ArenaManager {
         File file = new File(arenasFolder, arenaName + ".yml");
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        // Only save GUI-configurable settings
         config.set("arena.barrierEnabled", arena.isBarrierEnabled());
         config.set("arena.timeLimit", arena.getTimeLimit());
         config.set("arena.soundEnabled", arena.isSoundEnabled());
         config.set("arena.minPlayers", arena.getMinPlayers());
         config.set("arena.autoStartDelay", arena.getAutoStartDelay());
+
+        if (arena.getGuiConfig() != null) {
+            FileConfiguration guiConfig = arena.getGuiConfig();
+            if (guiConfig.contains("gui")) {
+                config.set("gui", guiConfig.get("gui"));
+            }
+        }
 
         try {
             config.save(file);

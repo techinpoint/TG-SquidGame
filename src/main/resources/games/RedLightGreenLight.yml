@@ -2,7 +2,7 @@ game:
   type: "RedLightGreenLight"
   displayName: "&cRed Light Green Light"
   description: "Classic Squid Game - Red Light Green Light"
-  
+
 defaults:
   timeLimit: 180
   startCountdown: 5
@@ -11,43 +11,3 @@ defaults:
   barrierEnabled: true
   minPlayers: 1
   autoStartDelay: 10
-
-gui:
-  name: "&6Red Light Green Light Settings"
-  size: 45
-  items:
-    timeLimit:
-      slot: 11
-      name: "&a⏳ Time Limit"
-      lore:
-        - "&7Change round time"
-    barrier:
-      slot: 13
-      name: "&c🚫 Barriers"
-      lore:
-        - "&7Toggle arena barriers"
-    sound:
-      slot: 15
-      name: "&b🔊 Sounds"
-      lore:
-        - "&7Enable or disable sound effects"
-    minPlayers:
-      slot: 19
-      name: "&d Minimum Players"
-      lore:
-        - "&7Minimum players to start"
-    autoStart:
-      slot: 20
-      name: "&e Auto-Start Timer"
-      lore:
-        - "&7Seconds before auto-start"
-    save:
-      slot: 40
-      name: "&a💾 Save & Exit"
-      lore:
-        - "&7Save and close GUI"
-    close:
-      slot: 44
-      name: "&c❌ Close"
-      lore:
-        - "&7Close without saving"
