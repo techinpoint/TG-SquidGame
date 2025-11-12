@@ -11,7 +11,7 @@ import java.util.*;
 public class PlayerManager {
 
     private final TGSquidGame plugin;
-    private final Map<UUID, String> playerArenaMap;
+    private final Map<UUID, Set<String>> playerArenasMap;
     private final Map<String, Set<UUID>> arenaPlayersMap;
     private final Map<String, Set<UUID>> arenaSpectatorsMap;
     private final Map<String, Set<UUID>> arenaEditorsMap;
@@ -21,7 +21,7 @@ public class PlayerManager {
 
     public PlayerManager(TGSquidGame plugin) {
         this.plugin = plugin;
-        this.playerArenaMap = new HashMap<>();
+        this.playerArenasMap = new HashMap<>();
         this.arenaPlayersMap = new HashMap<>();
         this.arenaSpectatorsMap = new HashMap<>();
         this.arenaEditorsMap = new HashMap<>();
@@ -32,32 +32,39 @@ public class PlayerManager {
 
     public void addPlayer(String arenaName, Player player) {
         UUID uuid = player.getUniqueId();
-        
-        // Store original location and inventory
-        originalLocations.put(uuid, player.getLocation().clone());
-        originalInventories.put(uuid, player.getInventory().getContents().clone());
-        originalArmor.put(uuid, player.getInventory().getArmorContents().clone());
-        
-        // Clear inventory
-        player.getInventory().clear();
-        player.getInventory().setArmorContents(new ItemStack[4]);
-        
-        playerArenaMap.put(uuid, arenaName);
+
+        // Store original location and inventory only once (on first join)
+        if (!playerArenasMap.containsKey(uuid)) {
+            originalLocations.put(uuid, player.getLocation().clone());
+            originalInventories.put(uuid, player.getInventory().getContents().clone());
+            originalArmor.put(uuid, player.getInventory().getArmorContents().clone());
+
+            // Clear inventory
+            player.getInventory().clear();
+            player.getInventory().setArmorContents(new ItemStack[4]);
+        }
+
+        playerArenasMap.computeIfAbsent(uuid, k -> new HashSet<>()).add(arenaName);
         arenaPlayersMap.computeIfAbsent(arenaName, k -> new HashSet<>()).add(uuid);
     }
 
-    public void removePlayer(Player player) {
+    public void removePlayer(String arenaName, Player player) {
         UUID uuid = player.getUniqueId();
-        String arenaName = playerArenaMap.remove(uuid);
-        if (arenaName != null) {
+        Set<String> arenas = playerArenasMap.get(uuid);
+        if (arenas != null) {
+            arenas.remove(arenaName);
+
             Set<UUID> players = arenaPlayersMap.get(arenaName);
             if (players != null) {
                 players.remove(uuid);
             }
+
+            // Only restore player state when leaving ALL arenas
+            if (arenas.isEmpty()) {
+                playerArenasMap.remove(uuid);
+                restorePlayerState(player);
+            }
         }
-        
-        // Restore inventory and teleport to original location
-        restorePlayerState(player);
     }
 
     public void addSpectator(String arenaName, Player player) {
@@ -127,7 +134,19 @@ public class PlayerManager {
     }
 
     public String getPlayerArena(Player player) {
-        return playerArenaMap.get(player.getUniqueId());
+        Set<String> arenas = playerArenasMap.get(player.getUniqueId());
+        if (arenas != null && !arenas.isEmpty()) {
+            return arenas.iterator().next();
+        }
+        return null;
+    }
+
+    public Set<String> getPlayerArenas(Player player) {
+        return playerArenasMap.getOrDefault(player.getUniqueId(), new HashSet<>());
+    }
+
+    public boolean isPlayerInArenas(Player player) {
+        return !playerArenasMap.getOrDefault(player.getUniqueId(), new HashSet<>()).isEmpty();
     }
     
     public String getSpectatingArena(Player player) {
@@ -148,8 +167,9 @@ public class PlayerManager {
         return arenaSpectatorsMap.getOrDefault(arenaName, new HashSet<>());
     }
 
-    public boolean isPlayerInArena(Player player) {
-        return playerArenaMap.containsKey(player.getUniqueId());
+    public boolean isPlayerInArena(String arenaName, Player player) {
+        Set<String> arenas = playerArenasMap.get(player.getUniqueId());
+        return arenas != null && arenas.contains(arenaName);
     }
 
     public boolean isPlayerSpectating(String arenaName, Player player) {

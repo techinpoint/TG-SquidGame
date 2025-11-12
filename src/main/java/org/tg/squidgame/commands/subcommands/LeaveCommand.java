@@ -5,6 +5,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.tg.squidgame.TGSquidGame;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class LeaveCommand implements SubCommand {
 
     private final TGSquidGame plugin;
@@ -21,21 +24,23 @@ public class LeaveCommand implements SubCommand {
         }
 
         Player player = (Player) sender;
-        
-        String arenaName = plugin.getPlayerManager().getPlayerArena(player);
-        if (arenaName != null) {
-            plugin.getPlayerManager().removePlayer(player);
-            player.sendMessage(ChatColor.GREEN + "You have left the game.");
+
+        Set<String> playerArenas = plugin.getPlayerManager().getPlayerArenas(player);
+        if (!playerArenas.isEmpty()) {
+            for (String arenaName : new HashSet<>(playerArenas)) {
+                plugin.getPlayerManager().removePlayer(arenaName, player);
+            }
+            player.sendMessage(ChatColor.GREEN + "You have left all games.");
             return true;
         }
-        
+
         String spectatingArena = plugin.getPlayerManager().getSpectatingArena(player);
         if (spectatingArena != null) {
             plugin.getPlayerManager().removeSpectator(spectatingArena, player);
             player.sendMessage(ChatColor.GREEN + "You have left the arena.");
             return true;
         }
-        
+
         player.sendMessage(ChatColor.RED + "You are not in any game.");
         return true;
     }

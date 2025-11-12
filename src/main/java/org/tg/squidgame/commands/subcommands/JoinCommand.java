@@ -54,26 +54,12 @@ public class JoinCommand implements SubCommand {
             return true;
         }
 
-        String playerCurrentArena = plugin.getPlayerManager().getPlayerArena(player);
-        if (playerCurrentArena != null) {
-            Map<String, String> replacements = new HashMap<>();
-            replacements.put("arena", playerCurrentArena);
-            sender.sendMessage(plugin.getMessagesManager().getMessage("already-in-arena"));
-            sender.sendMessage(ChatColor.YELLOW + "Finish or leave that game first using /tgsg leave");
-            return true;
-        }
-
-        String spectatingArena = plugin.getPlayerManager().getSpectatingArena(player);
-        if (spectatingArena != null) {
-            Map<String, String> replacements = new HashMap<>();
-            replacements.put("arena", spectatingArena);
-            sender.sendMessage(plugin.getMessagesManager().getMessage("already-in-arena"));
-            sender.sendMessage(ChatColor.YELLOW + "Leave that arena first using /tgsg leave");
+        if (plugin.getPlayerManager().isPlayerInArena(arenaName, player)) {
+            sender.sendMessage(ChatColor.RED + "You are already in arena '" + arenaName + "'");
             return true;
         }
 
         RedLightGreenLight game = plugin.getArenaManager().getActiveGame(arenaName);
-        RedLightGreenLight waitingGame = plugin.getArenaManager().getWaitingGame(arenaName);
 
         if (game != null && game.getGameState() != org.tg.squidgame.data.GameState.WAITING) {
             sender.sendMessage(ChatColor.RED + "Game is already running in arena '" + arenaName + "'");

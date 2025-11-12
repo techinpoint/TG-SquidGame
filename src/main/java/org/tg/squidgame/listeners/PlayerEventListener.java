@@ -26,19 +26,19 @@ public class PlayerEventListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        String arenaName = plugin.getPlayerManager().getPlayerArena(player);
+        java.util.Set<String> playerArenas = plugin.getPlayerManager().getPlayerArenas(player);
 
-        if (arenaName != null) {
+        for (String arenaName : new java.util.HashSet<>(playerArenas)) {
             RedLightGreenLight game = plugin.getArenaManager().getActiveGame(arenaName);
             if (game != null) {
-                plugin.getPlayerManager().removePlayer(player);
+                plugin.getPlayerManager().removePlayer(arenaName, player);
                 plugin.getPlayerManager().addSpectator(arenaName, player);
 
                 if (plugin.getPlayerManager().getArenaPlayers(arenaName).isEmpty()) {
                     plugin.getArenaManager().stopGame(arenaName);
                 }
             } else {
-                plugin.getPlayerManager().removePlayer(player);
+                plugin.getPlayerManager().removePlayer(arenaName, player);
             }
         }
     }

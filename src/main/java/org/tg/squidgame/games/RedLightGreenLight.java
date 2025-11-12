@@ -308,7 +308,7 @@ public class RedLightGreenLight {
     }
 
     private void eliminatePlayer(Player player) {
-        plugin.getPlayerManager().removePlayer(player);
+        plugin.getPlayerManager().removePlayer(arena.getName(), player);
         plugin.getPlayerManager().addSpectator(arena.getName(), player);
 
         Location joinLocation = joinPositions.get(player.getUniqueId());
@@ -336,7 +336,7 @@ public class RedLightGreenLight {
 
     private void declareWinner(Player player) {
         leaderboard.add(player.getName());
-        plugin.getPlayerManager().removePlayer(player);
+        plugin.getPlayerManager().removePlayer(arena.getName(), player);
         plugin.getPlayerManager().addSpectator(arena.getName(), player);
 
         Location joinLocation = joinPositions.get(player.getUniqueId());
