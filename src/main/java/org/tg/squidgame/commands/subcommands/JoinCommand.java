@@ -1,5 +1,6 @@
 package org.tg.squidgame.commands.subcommands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.tg.squidgame.TGSquidGame;
@@ -53,14 +54,30 @@ public class JoinCommand implements SubCommand {
             return true;
         }
 
-        if (plugin.getPlayerManager().isPlayerInArena(player)) {
+        String playerCurrentArena = plugin.getPlayerManager().getPlayerArena(player);
+        if (playerCurrentArena != null) {
+            Map<String, String> replacements = new HashMap<>();
+            replacements.put("arena", playerCurrentArena);
             sender.sendMessage(plugin.getMessagesManager().getMessage("already-in-arena"));
+            sender.sendMessage(ChatColor.YELLOW + "Finish or leave that game first using /tgsg leave");
+            return true;
+        }
+
+        String spectatingArena = plugin.getPlayerManager().getSpectatingArena(player);
+        if (spectatingArena != null) {
+            Map<String, String> replacements = new HashMap<>();
+            replacements.put("arena", spectatingArena);
+            sender.sendMessage(plugin.getMessagesManager().getMessage("already-in-arena"));
+            sender.sendMessage(ChatColor.YELLOW + "Leave that arena first using /tgsg leave");
             return true;
         }
 
         RedLightGreenLight game = plugin.getArenaManager().getActiveGame(arenaName);
-        if (game != null) {
-            sender.sendMessage(plugin.getMessagesManager().getMessage("game-already-running"));
+        RedLightGreenLight waitingGame = plugin.getArenaManager().getWaitingGame(arenaName);
+
+        if (game != null && game.getGameState() != org.tg.squidgame.data.GameState.WAITING) {
+            sender.sendMessage(ChatColor.RED + "Game is already running in arena '" + arenaName + "'");
+            sender.sendMessage(ChatColor.YELLOW + "Wait for the current game to finish.");
             return true;
         }
 

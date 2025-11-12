@@ -4,6 +4,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.tg.squidgame.TGSquidGame;
 import org.tg.squidgame.data.ArenaData;
+import org.tg.squidgame.data.GameState;
+import org.tg.squidgame.games.RedLightGreenLight;
 
 public class StartCommand implements SubCommand {
 
@@ -40,8 +42,16 @@ public class StartCommand implements SubCommand {
             return true;
         }
 
-        if (plugin.getArenaManager().isGameRunning(arenaName)) {
+        RedLightGreenLight game = plugin.getArenaManager().getActiveGame(arenaName);
+        if (game != null && game.getGameState() != GameState.WAITING) {
             sender.sendMessage(ChatColor.RED + "Game is already running in arena '" + arenaName + "'");
+            sender.sendMessage(ChatColor.YELLOW + "Wait for the current game to finish or use /tgsg " + arenaName + " stop");
+            return true;
+        }
+
+        if (plugin.getArenaManager().isGameRunning(arenaName)) {
+            sender.sendMessage(ChatColor.RED + "Another game is already active in this arena!");
+            sender.sendMessage(ChatColor.YELLOW + "Please wait for it to finish.");
             return true;
         }
 

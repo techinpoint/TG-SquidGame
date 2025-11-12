@@ -363,6 +363,10 @@ public class RedLightGreenLight {
     }
 
     private void endGame(boolean hadWinners) {
+        if (gameState == GameState.ENDING || gameState == GameState.STOPPED) {
+            return;
+        }
+
         gameState = GameState.ENDING;
 
         if (hadWinners) {
@@ -372,10 +376,13 @@ public class RedLightGreenLight {
             broadcastMessage(ChatColor.RED + "⏰ Game Over! Time's up or no players remaining.");
         }
 
+        broadcastMessage(ChatColor.YELLOW + "Cleaning up arena and removing players...");
+
         new BukkitRunnable() {
             @Override
             public void run() {
                 stop();
+                plugin.getArenaManager().stopGame(arena.getName());
             }
         }.runTaskLater(plugin, 100L);
     }
