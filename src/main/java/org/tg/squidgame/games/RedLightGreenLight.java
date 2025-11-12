@@ -311,7 +311,10 @@ public class RedLightGreenLight {
         plugin.getPlayerManager().removePlayer(player);
         plugin.getPlayerManager().addSpectator(arena.getName(), player);
 
-        if (arena.getSpectator() != null) {
+        Location joinLocation = joinPositions.get(player.getUniqueId());
+        if (joinLocation != null) {
+            player.teleport(joinLocation);
+        } else if (arena.getSpectator() != null) {
             player.teleport(arena.getSpectator());
         } else if (arena.getLobby() != null) {
             player.teleport(arena.getLobby());
@@ -336,7 +339,10 @@ public class RedLightGreenLight {
         plugin.getPlayerManager().removePlayer(player);
         plugin.getPlayerManager().addSpectator(arena.getName(), player);
 
-        if (arena.getSpectator() != null) {
+        Location joinLocation = joinPositions.get(player.getUniqueId());
+        if (joinLocation != null) {
+            player.teleport(joinLocation);
+        } else if (arena.getSpectator() != null) {
             player.teleport(arena.getSpectator());
         } else if (arena.getLobby() != null) {
             player.teleport(arena.getLobby());

@@ -78,6 +78,13 @@ public class TGSGCommand implements CommandExecutor, TabCompleter {
             }
         }
 
+        // Special case: /tgsg <arena> leave (arena name is first, leave is second)
+        if (args.length >= 1 && plugin.getArenaManager().arenaExists(args[0])) {
+            if ("leave".equals(args[0].toLowerCase())) {
+                return subCommands.get("leave").execute(sender, new String[]{});
+            }
+        }
+
         sender.sendMessage(ChatColor.RED + "Unknown command. Type /tgsg for help.");
         return true;
     }
@@ -151,5 +158,7 @@ public class TGSGCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatColor.YELLOW + "/tgsg <arena> start" + ChatColor.GRAY + " - Start game");
         sender.sendMessage(ChatColor.YELLOW + "/tgsg <arena> stop" + ChatColor.GRAY + " - Stop game");
         sender.sendMessage(ChatColor.YELLOW + "/tgsg <arena> join" + ChatColor.GRAY + " - Join arena");
+        sender.sendMessage(ChatColor.YELLOW + "/tgsg <arena> leave" + ChatColor.GRAY + " - Leave arena/game");
+        sender.sendMessage(ChatColor.YELLOW + "/tgsg leave" + ChatColor.GRAY + " - Leave current arena/game");
     }
 }

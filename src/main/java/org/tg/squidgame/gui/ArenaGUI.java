@@ -311,7 +311,12 @@ public class ArenaGUI {
             case EMERALD:
                 plugin.getArenaManager().saveArenaConfig(arena.getName());
                 player.sendMessage(ChatColor.GREEN + "Settings saved and GUI closed!");
-                player.closeInventory();
+                new org.bukkit.scheduler.BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        player.closeInventory();
+                    }
+                }.runTask(plugin);
                 break;
             case REDSTONE:
                 player.closeInventory();
