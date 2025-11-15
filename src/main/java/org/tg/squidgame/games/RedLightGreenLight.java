@@ -85,6 +85,8 @@ public class RedLightGreenLight {
             BarrierManager.createBarriers(arena);
         }
 
+        BarrierManager.createStartZoneBarriers(arena);
+
         startCountdown();
     }
 
@@ -122,6 +124,8 @@ public class RedLightGreenLight {
                     bossBar.setTitle("🟢 GREEN LIGHT - GO!");
                     bossBar.setColor(BarColor.GREEN);
 
+                    BarrierManager.removeStartZoneBarriers(arena);
+
                     for (UUID uuid : players) {
                         Player player = Bukkit.getPlayer(uuid);
                         if (player != null) {
@@ -156,6 +160,8 @@ public class RedLightGreenLight {
         if (arena.isBarrierEnabled()) {
             BarrierManager.removeBarriers(arena);
         }
+
+        BarrierManager.removeStartZoneBarriers(arena);
 
         Set<UUID> allPlayers = new HashSet<>(plugin.getPlayerManager().getArenaPlayers(arena.getName()));
         allPlayers.addAll(plugin.getPlayerManager().getArenaSpectators(arena.getName()));
@@ -202,17 +208,7 @@ public class RedLightGreenLight {
                 }
 
                 phaseTicks++;
-                
-                // Check for red light warning (1 second before red light)
-                if (lightState == LightState.GREEN && phaseTicks == phaseLength - 20 && !redLightWarning) {
-                    redLightWarning = true;
-                    bossBar.setTitle("⚠️ RED LIGHT COMING - GET READY TO STOP!");
-                    bossBar.setColor(BarColor.RED);
-                    if (arena.isSoundEnabled()) {
-                        playSound(Sound.BLOCK_NOTE_BLOCK_BASS, 0.8f);
-                    }
-                }
-                
+
                 if (phaseTicks >= phaseLength) {
                     toggleLight();
                     phaseTicks = 0;
@@ -261,8 +257,8 @@ public class RedLightGreenLight {
     private void checkPlayerMovement() {
         long currentTime = System.currentTimeMillis();
         long timeSinceRedLight = currentTime - redLightStartTime;
-        
-        if (timeSinceRedLight < 500) {
+
+        if (timeSinceRedLight < 1000) {
             return;
         }
 

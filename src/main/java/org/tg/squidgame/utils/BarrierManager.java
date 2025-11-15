@@ -13,6 +13,7 @@ import java.util.Map;
 public class BarrierManager {
 
     private static final Map<String, List<Location>> arenaBarriers = new HashMap<>();
+    private static final Map<String, List<Location>> startZoneBarriers = new HashMap<>();
 
     public static void createBarriers(ArenaData arena) {
         if (arena.getPos1() == null || arena.getPos2() == null) {
@@ -68,6 +69,69 @@ public class BarrierManager {
 
     public static void removeBarriers(ArenaData arena) {
         List<Location> barriers = arenaBarriers.remove(arena.getName());
+        if (barriers != null) {
+            for (Location loc : barriers) {
+                if (loc.getWorld().getBlockAt(loc).getType() == Material.BARRIER) {
+                    loc.getWorld().getBlockAt(loc).setType(Material.AIR);
+                }
+            }
+        }
+    }
+
+    public static void createStartZoneBarriers(ArenaData arena) {
+        if (arena.getStartPos1() == null || arena.getStartPos2() == null) {
+            return;
+        }
+
+        removeStartZoneBarriers(arena);
+
+        List<Location> barriers = new ArrayList<>();
+        Location start1 = arena.getStartPos1();
+        Location start2 = arena.getStartPos2();
+        World world = start1.getWorld();
+
+        int minX = Math.min(start1.getBlockX(), start2.getBlockX());
+        int maxX = Math.max(start1.getBlockX(), start2.getBlockX());
+        int minY = Math.min(start1.getBlockY(), start2.getBlockY());
+        int maxY = Math.max(start1.getBlockY(), start2.getBlockY());
+        int minZ = Math.min(start1.getBlockZ(), start2.getBlockZ());
+        int maxZ = Math.max(start1.getBlockZ(), start2.getBlockZ());
+
+        for (int y = minY; y <= maxY + 2; y++) {
+            for (int x = minX; x <= maxX; x++) {
+                Location loc1 = new Location(world, x, y, minZ);
+                if (world.getBlockAt(loc1).getType() == Material.AIR) {
+                    world.getBlockAt(loc1).setType(Material.BARRIER);
+                    barriers.add(loc1);
+                }
+
+                Location loc2 = new Location(world, x, y, maxZ);
+                if (world.getBlockAt(loc2).getType() == Material.AIR) {
+                    world.getBlockAt(loc2).setType(Material.BARRIER);
+                    barriers.add(loc2);
+                }
+            }
+
+            for (int z = minZ; z <= maxZ; z++) {
+                Location loc1 = new Location(world, minX, y, z);
+                if (world.getBlockAt(loc1).getType() == Material.AIR) {
+                    world.getBlockAt(loc1).setType(Material.BARRIER);
+                    barriers.add(loc1);
+                }
+
+                Location loc2 = new Location(world, maxX, y, z);
+                if (world.getBlockAt(loc2).getType() == Material.AIR) {
+                    world.getBlockAt(loc2).setType(Material.BARRIER);
+                    barriers.add(loc2);
+                }
+            }
+        }
+
+        startZoneBarriers.put(arena.getName(), barriers);
+    }
+
+    public static void removeStartZoneBarriers(ArenaData arena) {
+        List<Location> barriers = startZoneBarriers.remove(arena.getName());
         if (barriers != null) {
             for (Location loc : barriers) {
                 if (loc.getWorld().getBlockAt(loc).getType() == Material.BARRIER) {
