@@ -1,15 +1,15 @@
 # TG SquidGame Plugin
 
-**Version:** 1.0
+**Version:** 1.2
 **Author:** Techinpoint Gamerz (TG)
 **Minecraft Version:** 1.21+
-**Server Type:** Spigot/Paper
+**Server Type:** Paper 1.21.1+
 
 ---
 
 ## Overview
 
-TG SquidGame is a modular Minecraft minigame plugin inspired by the popular Squid Game series. This plugin supports multiple arenas in a single world and is designed for easy expansion. In version 1.0, only the **Red Light Green Light** minigame is implemented.
+TG SquidGame is a modular Minecraft minigame plugin inspired by the popular Squid Game series and Indian festivals. This plugin supports multiple arenas in a single world and is designed for easy expansion. Current version includes two exciting minigames: **Red Light Green Light** and **Holi Festival**.
 
 ### Key Features
 
@@ -99,21 +99,21 @@ gui:
 | `/tgsg` or `/sg` | Show help menu | - |
 | `/tgsg reload` | Reload plugin configuration | `tgsg.admin` |
 | `/tgsg list` | List all arenas | `tgsg.admin` |
-| `/tgsg create <name> <type>` | Create a new arena | `tgsg.admin` |
+| `/tgsg create <name> <type>` | Create a new arena (RedLightGreenLight or Holi) | `tgsg.admin` |
 | `/tgsg delete <name>` | Delete an arena | `tgsg.admin` |
 
 ### Arena Setup Commands
 
 | Command | Description | Permission |
 |---------|-------------|------------|
-| `/tgsg <arena> setpos1` | Set arena corner 1 | `tgsg.admin` |
-| `/tgsg <arena> setpos2` | Set arena corner 2 | `tgsg.admin` |
-| `/tgsg <arena> setstart1` | Set start area corner 1 | `tgsg.admin` |
-| `/tgsg <arena> setstart2` | Set start area corner 2 | `tgsg.admin` |
-| `/tgsg <arena> setwin1` | Set win zone corner 1 | `tgsg.admin` |
-| `/tgsg <arena> setwin2` | Set win zone corner 2 | `tgsg.admin` |
-| `/tgsg <arena> setlobby` | Set lobby spawn point | `tgsg.admin` |
-| `/tgsg <arena> setspec` | Set spectator spawn point | `tgsg.admin` |
+| `/tgsg <arena> setpos1` | Set arena corner 1 (Required for all games) | `tgsg.admin` |
+| `/tgsg <arena> setpos2` | Set arena corner 2 (Required for all games) | `tgsg.admin` |
+| `/tgsg <arena> setstart1` | Set start area corner 1 (Red Light Green Light only) | `tgsg.admin` |
+| `/tgsg <arena> setstart2` | Set start area corner 2 (Red Light Green Light only) | `tgsg.admin` |
+| `/tgsg <arena> setwin1` | Set win zone corner 1 (Red Light Green Light only) | `tgsg.admin` |
+| `/tgsg <arena> setwin2` | Set win zone corner 2 (Red Light Green Light only) | `tgsg.admin` |
+| `/tgsg <arena> setlobby` | Set lobby spawn point (Required for all games) | `tgsg.admin` |
+| `/tgsg <arena> setspec` | Set spectator spawn point (Required for all games) | `tgsg.admin` |
 
 ### Arena Management Commands
 
@@ -132,6 +132,7 @@ gui:
 | `/tgsg <arena> start` | Start the game | `tgsg.admin` |
 | `/tgsg <arena> stop` | Stop the game | `tgsg.admin` |
 | `/tgsg <arena> join` | Join an arena | - |
+| `/tgsg leave` | Leave all arenas | - |
 
 ---
 
@@ -142,9 +143,13 @@ gui:
 
 ---
 
-## Red Light Green Light Game
+## Game Modes
 
-### How It Works
+### Red Light Green Light Game
+
+Classic Squid Game minigame where players must reach the finish line while following light signals.
+
+#### How It Works
 
 1. **Game Start**: All players are teleported to the starting area
 2. **Green Light Phase**: Players can move freely (4-10 seconds)
@@ -153,15 +158,84 @@ gui:
 5. **Win Condition**: First players to reach the win zone are declared winners
 6. **Time Limit**: Game ends after the configured time limit
 
-### Elimination Rules
+#### Setup Requirements
+
+For Red Light Green Light arenas, you must configure:
+- Arena boundaries (pos1, pos2)
+- Starting area (startPos1, startPos2)
+- Win zone (winPos1, winPos2)
+- Lobby spawn point
+- Spectator spawn point
+
+#### Elimination Rules
 
 - Moving during red light = Instant elimination
 - Leaving arena bounds = Instant elimination
 - Disconnecting = Automatic elimination
 - Eliminated players become spectators
 
+---
+
+### Holi Festival Game
+
+Indian festival-inspired minigame where players spray colorful particles at each other to score points.
+
+#### How It Works
+
+1. **Game Start**: All players receive Holi Pichkari (color spray gun)
+2. **Objective**: Spray colors on other players to score points
+3. **Scoring**: Each successful hit adds 1 point to your score
+4. **Cooldown**: 3-second cooldown between spray uses
+5. **Win Condition**: Player with most hits wins at the end
+6. **Time Limit**: Default 10 minutes (configurable)
+
+#### Setup Requirements
+
+For Holi arenas, you only need to configure:
+- Arena boundaries (pos1, pos2)
+- Lobby spawn point
+- Spectator spawn point
+
+Note: Start zones and win zones are not required for Holi.
+
+#### Gameplay Features
+
+- **Pichkari (Spray Gun)**: Right-click to spray vibrant colors
+- **Color Effects**: Hit players glow and display particle effects
+- **Leaderboard**: Top 5 players displayed at game end
+- **Fireworks**: Victory celebration for the champion
+- **No Damage**: PvP damage is disabled, only color scoring
+
+#### Configuration
+
+Customize Holi settings in `config.yml`:
+
+```yaml
+holi:
+  duration: 600  # Game duration in seconds
+  pichkari:
+    name: "&bHoli Pichkari"
+    cooldown: 3  # Cooldown in seconds
+    range: 10.0  # Spray range in blocks
+  colors:
+    - RED
+    - BLUE
+    - GREEN
+    - YELLOW
+    - PURPLE
+    - ORANGE
+  bossbar:
+    text: "&bHoli Festival - {time} remaining"
+    color: "BLUE"
+    style: "SOLID"
+  fireworks: true
+```
+
+---
+
 ### Spectator Mode
 
+Both game modes support spectator functionality:
 - Eliminated and winning players enter spectator mode
 - Can freely fly within arena bounds
 - Cannot interfere with active players
@@ -173,8 +247,9 @@ gui:
 
 ### Requirements
 
-- Java 17 or higher
+- Java 21 or higher
 - Maven 3.6+
+- Paper 1.21.1+ (Spigot compatible)
 
 ### Build Instructions
 
@@ -184,9 +259,14 @@ cd TG-SquidGame
 mvn clean package
 ```
 
-The compiled JAR will be in `target/TG-SquidGame-1.0.jar`
+The compiled JAR will be in `target/TG-SquidGame-1.2.jar`
 
 ---
+
+## Available Minigames
+
+- Red Light Green Light
+- Holi Festival
 
 ## Future Minigames (Planned)
 
@@ -201,8 +281,9 @@ The compiled JAR will be in `target/TG-SquidGame-1.0.jar`
 ## Support & Credits
 
 **Developed by:** Techinpoint Gamerz (TG)
-**Version:** 1.0
-**Minecraft Version:** 1.21+
+**Version:** 1.2
+**Minecraft Version:** 1.21.1+
+**Server Type:** Paper (Spigot compatible)
 
 For support, please contact Techinpoint Gamerz.
 
@@ -215,6 +296,16 @@ This plugin is proprietary software. All rights reserved by Techinpoint Gamerz.
 ---
 
 ## Changelog
+
+### Version 1.2 (Current)
+- Added Holi Festival minigame
+- Migrated to Paper API with Java 21
+- Enhanced GUI with improved player controls
+- Multiple arena support improvements
+- Auto-start system with configurable timers
+- Player can join multiple arenas simultaneously
+- Enhanced particle effects and visual feedback
+- Improved game state management
 
 ### Version 1.0 (Initial Release)
 - Red Light Green Light minigame implementation

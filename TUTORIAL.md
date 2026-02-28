@@ -1,19 +1,20 @@
 # TG SquidGame - Complete Setup Tutorial
 
-This tutorial will guide you through setting up and running your first Red Light Green Light game arena.
+This tutorial will guide you through setting up and running both Red Light Green Light and Holi Festival game arenas.
 
 ---
 
 ## Table of Contents
 
 1. [Installation](#installation)
-2. [Creating Your First Arena](#creating-your-first-arena)
-3. [Configuring Arena Positions](#configuring-arena-positions)
-4. [Using the GUI Editor](#using-the-gui-editor)
-5. [Starting a Game](#starting-a-game)
-6. [Player Experience](#player-experience)
-7. [Advanced Configuration](#advanced-configuration)
-8. [Troubleshooting](#troubleshooting)
+2. [Choosing Your Game Type](#choosing-your-game-type)
+3. [Creating Red Light Green Light Arena](#creating-red-light-green-light-arena)
+4. [Creating Holi Festival Arena](#creating-holi-festival-arena)
+5. [Using the GUI Editor](#using-the-gui-editor)
+6. [Starting a Game](#starting-a-game)
+7. [Player Experience](#player-experience)
+8. [Advanced Configuration](#advanced-configuration)
+9. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -21,9 +22,9 @@ This tutorial will guide you through setting up and running your first Red Light
 
 ### Step 1: Install the Plugin
 
-1. Download `TG-SquidGame-1.0.jar`
+1. Download `TG-SquidGame-1.2.jar`
 2. Place it in your server's `plugins` folder
-3. Start or restart your Minecraft server
+3. Start or restart your Minecraft server (requires Paper 1.21.1+ or compatible)
 4. Check the console for the message: `TG SquidGame v1.0 by Techinpoint Gamerz has been enabled!`
 
 ### Step 2: Verify Installation
@@ -37,7 +38,25 @@ You should see the help menu with all available commands.
 
 ---
 
-## Creating Your First Arena
+## Choosing Your Game Type
+
+The plugin supports two game types, each with different setup requirements:
+
+### Red Light Green Light
+- Classic Squid Game minigame
+- Players race to finish line while freezing during red light
+- Requires 8 position points (full setup)
+- Best for: Competitive racing gameplay
+
+### Holi Festival
+- Indian festival-inspired color battle
+- Players spray colors on each other to score points
+- Requires only 4 position points (simplified setup)
+- Best for: Casual fun and team events
+
+---
+
+## Creating Red Light Green Light Arena
 
 ### Step 1: Create the Arena File
 
@@ -55,13 +74,11 @@ Arena 'myarena' created successfully!
 Configure it with: /tgsg myarena setpos1, setpos2, etc.
 ```
 
----
+### Step 2: Configuring Arena Positions
 
-## Configuring Arena Positions
+To set up a Red Light Green Light arena, you need to define 8 key locations. Here's the recommended order:
 
-To set up an arena, you need to define 8 key locations. Here's the recommended order:
-
-### Step 2: Define Arena Boundaries
+#### Define Arena Boundaries
 
 Stand at one corner of where you want your arena to be:
 ```
@@ -75,7 +92,7 @@ Walk to the opposite corner (diagonal):
 
 **Tip:** These two points define a 3D rectangular region. Everything inside is the arena.
 
-### Step 3: Define Starting Area
+#### Define Starting Area
 
 Stand at one corner of where players should spawn:
 ```
@@ -89,7 +106,7 @@ Walk to the opposite corner of the starting area:
 
 **Tip:** Players will be randomly spawned within this region when the game starts.
 
-### Step 4: Define Win Zone
+#### Define Win Zone
 
 Stand at one corner of the finish line:
 ```
@@ -103,14 +120,14 @@ Walk to the opposite corner:
 
 **Tip:** Players who reach this zone win the game.
 
-### Step 5: Set Lobby Spawn
+#### Set Lobby Spawn
 
 Stand where players should wait before the game starts:
 ```
 /tgsg myarena setlobby
 ```
 
-### Step 6: Set Spectator Spawn
+#### Set Spectator Spawn
 
 Stand where eliminated/winning players should spectate from:
 ```
@@ -119,7 +136,7 @@ Stand where eliminated/winning players should spectate from:
 
 **Tip:** Choose a location with a good view of the arena.
 
-### Step 7: Save Your Configuration
+#### Save Your Configuration
 
 ```
 /tgsg myarena save
@@ -128,6 +145,71 @@ Stand where eliminated/winning players should spectate from:
 **Expected Output:**
 ```
 Arena 'myarena' saved successfully!
+```
+
+---
+
+## Creating Holi Festival Arena
+
+Holi arenas are simpler to set up - no start zones or win zones needed!
+
+### Step 1: Create the Arena File
+
+```
+/tgsg create holiarena Holi
+```
+
+Replace `holiarena` with your preferred arena name (no spaces).
+
+**Expected Output:**
+```
+Arena 'holiarena' created successfully!
+Configure it with: /tgsg holiarena setpos1, setpos2, etc.
+```
+
+### Step 2: Configuring Arena Positions
+
+For Holi, you only need to define 4 key locations:
+
+#### Define Arena Boundaries
+
+Stand at one corner of your play area:
+```
+/tgsg holiarena setpos1
+```
+
+Walk to the opposite corner (diagonal):
+```
+/tgsg holiarena setpos2
+```
+
+**Tip:** Make the arena spacious (30x30 blocks or larger) so players have room to run and dodge.
+
+#### Set Lobby Spawn
+
+Stand where players should wait before the game starts:
+```
+/tgsg holiarena setlobby
+```
+
+#### Set Spectator Spawn
+
+Stand where spectators should watch from (preferably elevated):
+```
+/tgsg holiarena setspec
+```
+
+**Tip:** Place spectator spawn above the arena for a bird's eye view.
+
+#### Save Your Configuration
+
+```
+/tgsg holiarena save
+```
+
+**Expected Output:**
+```
+Arena 'holiarena' saved successfully!
 ```
 
 ---
@@ -213,20 +295,22 @@ When ready, an admin runs:
 
 ## Player Experience
 
-### During Green Light
+### Red Light Green Light Experience
 
-- **BossBar:** Shows "🟢 GREEN LIGHT - GO!" in green
+#### During Green Light
+
+- **BossBar:** Shows "GREEN LIGHT - GO!" in green
 - **Sound:** High-pitched chime sound plays
 - **Action:** Players can move freely toward the win zone
 
-### During Red Light
+#### During Red Light
 
-- **BossBar:** Shows "🔴 RED LIGHT - STOP!" in red
+- **BossBar:** Shows "RED LIGHT - STOP!" in red
 - **Sound:** Low bass sound plays
 - **Action:** Players must freeze completely
 - **Penalty:** Moving even slightly results in instant elimination
 
-### Elimination
+#### Elimination
 
 When eliminated:
 - Player receives message: "You moved during RED LIGHT! You are eliminated."
@@ -235,21 +319,68 @@ When eliminated:
 - Lightning sound effect plays
 - Can watch the rest of the game
 
-### Winning
+#### Winning
 
 When a player reaches the win zone:
-- Broadcast message: "⭐ [Player] has reached the finish line!"
+- Broadcast message: "Player has reached the finish line!"
 - Player receives: "Congratulations! You won!"
 - Victory sound plays
 - Enters spectator mode to watch remaining players
 
-### Game End
+#### Game End
 
 The game ends when:
 - Time runs out, OR
 - All players are eliminated or have won
 
 All players are returned to the lobby spawn point.
+
+---
+
+### Holi Festival Experience
+
+#### Getting Started
+
+When joining:
+- Player receives Holi Pichkari (color spray gun)
+- Item appears in inventory as a Blaze Rod
+- Right-click to spray vibrant colors
+
+#### During Gameplay
+
+- **BossBar:** Shows "Holi Festival - Time remaining"
+- **Objective:** Spray colors on other players
+- **Scoring:** Each successful hit adds 1 point
+- **Cooldown:** 3 seconds between sprays
+- **Effects:** Hit players glow with color particles
+
+#### Spraying Colors
+
+How to use the Pichkari:
+1. Aim at another player
+2. Right-click to spray
+3. Colorful particles shoot forward
+4. Hit displays particle burst on target
+5. Target glows and shows color effects
+
+#### Getting Hit
+
+When sprayed with color:
+- Screen title shows "COLORED!"
+- Your character glows
+- Colorful particles surround you for 10 seconds
+- Message shows who colored you
+
+#### Game End
+
+The game ends when:
+- Time limit is reached (default 10 minutes)
+
+At game end:
+- Leaderboard displays top 5 players
+- Champion gets victory title
+- Fireworks celebration
+- All players return to lobby
 
 ---
 
@@ -318,6 +449,21 @@ settings:
   soundEffects: true
   defaultBossBarColor: "GREEN"
   useComplexRandomLogic: true
+
+holi:
+  duration: 600  # 10 minutes
+  pichkari:
+    name: "&bHoli Pichkari"
+    cooldown: 3  # seconds
+    range: 10.0  # blocks
+  colors:
+    - RED
+    - BLUE
+    - GREEN
+    - YELLOW
+    - PURPLE
+    - ORANGE
+  fireworks: true
 ```
 
 After editing, reload:
@@ -331,10 +477,17 @@ After editing, reload:
 
 ### Problem: "Arena is not fully configured"
 
-**Solution:** Make sure you've set all 8 positions:
+**Solution:** Check required positions based on game type:
+
+For Red Light Green Light (8 positions required):
 - pos1 and pos2 (arena boundaries)
 - startPos1 and startPos2 (spawn area)
 - winPos1 and winPos2 (finish line)
+- lobby (waiting area)
+- spectator (observer location)
+
+For Holi (4 positions required):
+- pos1 and pos2 (arena boundaries)
 - lobby (waiting area)
 - spectator (observer location)
 
@@ -385,7 +538,7 @@ Verify with:
 
 ## Building a Great Arena
 
-### Design Tips
+### Red Light Green Light Design Tips
 
 1. **Distance:** Make the start-to-finish distance 30-50 blocks for balanced gameplay
 2. **Height:** Keep the arena relatively flat or use gentle slopes
@@ -394,7 +547,7 @@ Verify with:
 5. **Lobby:** Place the lobby outside the arena boundaries
 6. **Width:** Allow 10-20 blocks of width so players can spread out
 
-### Example Coordinates
+#### Example Coordinates (Red Light Green Light)
 
 For a basic 40-block straightaway arena:
 
@@ -409,6 +562,26 @@ For a basic 40-block straightaway arena:
 /tgsg myarena setspec        → Stand at 105, 80, 150
 ```
 
+### Holi Festival Design Tips
+
+1. **Size:** Make the arena 30x30 blocks or larger for movement space
+2. **Obstacles:** Add pillars, walls, or structures for tactical gameplay
+3. **Height:** Multiple levels add vertical gameplay dimension
+4. **Open Areas:** Balance cover with open spaces for chasing
+5. **Spectator View:** Elevated position for best view of action
+6. **Theme:** Decorate with colorful blocks to match festival vibe
+
+#### Example Coordinates (Holi)
+
+For a 40x40 block arena:
+
+```
+/tgsg holiarena setpos1      → Stand at 200, 64, 200
+/tgsg holiarena setpos2      → Stand at 240, 74, 240
+/tgsg holiarena setlobby     → Stand at 220, 64, 190
+/tgsg holiarena setspec      → Stand at 220, 85, 220
+```
+
 ---
 
 ## Quick Reference Card
@@ -417,15 +590,17 @@ For a basic 40-block straightaway arena:
 
 | Task | Command |
 |------|---------|
-| Create arena | `/tgsg create <name> RedLightGreenLight` |
+| Create Red Light arena | `/tgsg create <name> RedLightGreenLight` |
+| Create Holi arena | `/tgsg create <name> Holi` |
 | Set boundaries | `/tgsg <name> setpos1` and `setpos2` |
-| Set spawn area | `/tgsg <name> setstart1` and `setstart2` |
-| Set win zone | `/tgsg <name> setwin1` and `setwin2` |
+| Set spawn area (RLGL only) | `/tgsg <name> setstart1` and `setstart2` |
+| Set win zone (RLGL only) | `/tgsg <name> setwin1` and `setwin2` |
 | Set lobby | `/tgsg <name> setlobby` |
 | Set spectator | `/tgsg <name> setspec` |
 | Save arena | `/tgsg <name> save` |
 | Edit settings | `/tgsg <name> edit` |
 | Join arena | `/tgsg <name> join` |
+| Leave arena | `/tgsg leave` |
 | Start game | `/tgsg <name> start` |
 | Stop game | `/tgsg <name> stop` |
 | List arenas | `/tgsg list` |
@@ -437,17 +612,20 @@ For a basic 40-block straightaway arena:
 
 Now that you have your first arena set up:
 
-1. Test the game with friends
+1. Test both game modes with friends
 2. Adjust time limits and settings based on feedback
-3. Build additional arenas for variety
+3. Build multiple arenas of different types
 4. Experiment with different arena layouts and themes
-5. Create obstacle courses or themed environments
+5. For Red Light Green Light: Create obstacle courses or themed environments
+6. For Holi: Add strategic cover and multiple levels for tactical gameplay
+7. Mix both game types for variety in events
 
-Stay tuned for future updates with new minigames!
+Both game modes offer unique experiences - use Red Light Green Light for competitive tournaments and Holi for casual fun events!
 
 ---
 
 **Developed by Techinpoint Gamerz (TG)**
-**Version 1.0**
+**Version 1.2**
+**Server Type:** Paper 1.21.1+
 
 Enjoy your Squid Game experience!
