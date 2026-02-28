@@ -1,0 +1,43 @@
+settings:
+  prefix: "&6[TG SquidGame]&r "
+  defaultTimeLimit: 180
+  countdownTimer: 5
+  enableJoinMessage: true
+  soundEffects: true
+  defaultBossBarColor: "GREEN"
+  useComplexRandomLogic: true
+  
+game:
+  # Default game settings
+  startCountdown: 5  # seconds before game starts
+  defaultGameTime: 180  # seconds for game duration
+  movementThreshold: 0.15  # distance threshold for movement detection
+  
+arena:
+  # Arena-specific settings
+  autoSaveOnEdit: false  # whether to auto-save when exiting edit mode
+  requireEditModeForSave: true  # require edit mode to use save command
+
+holi:
+  duration: 600  # 10 minutes in seconds
+  pichkari:
+    name: "&bHoli Pichkari"
+    cooldown: 3  # seconds
+    range: 10.0  # blocks
+  colors:
+    - RED
+    - BLUE
+    - GREEN
+    - YELLOW
+    - PURPLE
+    - ORANGE
+  bossbar:
+    text: "&bHoli Festival - {time} remaining"
+    color: "BLUE"
+    style: "SOLID"
+    enabled: true
+  messages:
+    start: "&a🎨 Holi Festival has begun! Spray colors on everyone!"
+    end: "&e🏁 Holi Festival has ended!"
+    hit: "&b{player} splashed you with color!"
+  fireworks: true

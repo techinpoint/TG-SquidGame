@@ -1,0 +1,67 @@
+# Holi Festival Mini-Game Template
+# This template defines default settings for Holi arenas
+
+game:
+  name: "Holi"
+  displayName: "&bHoli Festival"
+  description: "Spray colors on other players and score points!"
+
+defaults:
+  # Game duration in seconds (10 minutes default)
+  timeLimit: 600
+  
+  # Countdown before game starts
+  startCountdown: 5
+  
+  # Enable/disable barriers around arena
+  barrierEnabled: false
+  
+  # Enable/disable sound effects
+  soundEnabled: true
+  
+  # Minimum players required to start
+  minPlayers: 2
+  
+  # Auto-start delay in seconds
+  autoStartDelay: 15
+  
+  # Random logic (not used in Holi, but kept for compatibility)
+  randomLogic: "simple"
+
+features:
+  # Pichkari settings
+  pichkari:
+    item: "BLAZE_ROD"
+    name: "&bHoli Pichkari"
+    cooldown: 3
+    range: 10.0
+  
+  # Color spray effects
+  colors:
+    - RED
+    - BLUE
+    - GREEN
+    - YELLOW
+    - PURPLE
+    - ORANGE
+  
+  # BossBar configuration
+  bossbar:
+    enabled: true
+    text: "&bHoli Festival - {time} remaining"
+    color: "BLUE"
+    style: "SOLID"
+  
+  # Fireworks at end
+  fireworks: true
+  
+  # PvP damage disabled
+  pvpDisabled: true
+
+messages:
+  start: "&a🎨 Holi Festival has begun! Spray colors on everyone!"
+  end: "&e🏁 Holi Festival has ended!"
+  hit: "&b{player} splashed you with color!"
+  colored_title: "&bYou got colored!"
+  winner_title: "&6🎉 WINNER!"
+  winner_subtitle: "&eYou colored the most players!"
